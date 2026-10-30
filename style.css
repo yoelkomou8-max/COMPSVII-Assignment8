@@ -1,0 +1,70 @@
+
+const quizForm = document.getElementById("quiz-form");
+const resultContainer = document.getElementById("result-container");
+
+quizForm.addEventListener("submit", function(event) {
+    event.preventDefault();
+
+    const formData = new FormData(quizForm);
+
+    const scores = {
+        speed: 0,
+        playmaker: 0,
+        scorer: 0,
+        defender: 0
+    };
+
+    // Check all 4 answers
+    for (let i = 1; i <= 4; i++) {
+        const answer = formData.get("q" + i);
+
+        if (!answer) {
+            resultContainer.innerHTML = "<h3>Please answer all 4 questions!</h3>";
+            return;
+        }
+
+        scores[answer]++;
+    }
+
+    // Find the highest score
+    let winner = "speed";
+
+    for (const type in scores) {
+        if (scores[type] > scores[winner]) {
+            winner = type;
+        }
+    }
+
+    // Display the result
+    const results = {
+        speed: {
+            title: "⚡ The Speedster!",
+            description: "You are fast and explosive. You love beating defenders!"
+        },
+        playmaker: {
+            title: "🎯 The Playmaker!",
+            description: "You are creative and know how to create chances!"
+        },
+        scorer: {
+            title: "🔥 The Goal Machine!",
+            description: "You love scoring goals and making the difference!"
+        },
+        defender: {
+            title: "🛡️ The Defender!",
+            description: "You are disciplined and always protect your team!"
+        }
+    };
+
+    resultContainer.innerHTML = `
+        <h2>${results[winner].title}</h2>
+        <p>${results[winner].description}</p>
+        <button type="button" id="restart-button" class="btn btn-outline-success">
+            Try Again
+        </button>
+    `;
+
+    document.getElementById("restart-button").addEventListener("click", function() {
+        quizForm.reset();
+        resultContainer.innerHTML = "";
+    });
+});
